@@ -214,6 +214,12 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mSplitButton = findViewById(R.id.action_split);
         mSplitButton.setOnClickListener(this);
         mSaveAppPairButton.setOnClickListener(this);
+
+        // cannon: 常驻“清除全部”按钮（Go 版布局可能无此 id，判空）
+        View clearAll = findViewById(R.id.action_clear_all);
+        if (clearAll != null) {
+            clearAll.setOnClickListener(this);
+        }
     }
 
     /**
@@ -227,16 +233,36 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     @Override
     public void onClick(View view) {
+        int id = view.getId();
+        // cannon: 清除全部不依赖 mCallbacks，空态下也能用
+        if (id == R.id.action_clear_all) {
+            dismissAllTasks();
+            return;
+        }
         if (mCallbacks == null) {
             return;
         }
-        int id = view.getId();
         if (id == R.id.action_screenshot) {
             mCallbacks.onScreenshot();
         } else if (id == R.id.action_split) {
             mCallbacks.onSplit();
         } else if (id == R.id.action_save_app_pair) {
             mCallbacks.onSaveAppPair();
+        }
+    }
+
+    /**
+     * cannon: 常驻“清除全部”的点击处理。不挂 mCallbacks（其仅在选中任务时设置），
+     * 直接从根视图找同级 RecentsView 调它自己的 dismissAllTasks。
+     */
+    private void dismissAllTasks() {
+        View root = getRootView();
+        if (root == null) {
+            return;
+        }
+        View recents = root.findViewById(R.id.overview_panel);
+        if (recents instanceof RecentsView) {
+            ((RecentsView) recents).dismissAllTasks(this);
         }
     }
 
