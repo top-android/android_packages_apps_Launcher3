@@ -45,6 +45,19 @@
             android:text="@string/action_split"
             android:visibility="gone" />
 
+        <!-- cannon: 常驻“清除全部”，无需滚动到任务列表末尾 -->
+        <Space
+            android:layout_width="@dimen/overview_actions_button_spacing"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/action_clear_all"
+            style="@style/OverviewActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recents_clear_all"
+            android:theme="@style/ThemeControlHighlightWorkspaceColor" />
+
     </LinearLayout>
 
     <!-- Currently, the only "group action button" is this save app pair button. If more are added,
